@@ -985,9 +985,23 @@ export default function Page() {
             </p>
           </div>
 
-          <p className="text-xs font-black uppercase tracking-[0.24em] text-white/35">
-            © {new Date().getFullYear()} ARISTA
-          </p>
+          <div className="text-left md:text-right">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-white/35">
+              © {new Date().getFullYear()} ARISTA
+            </p>
+
+            <p className="mt-3 text-xs font-bold uppercase tracking-[0.18em] text-white/35">
+              Built by{" "}
+              <a
+                href="https://solusivendor.com"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white underline decoration-white/30 underline-offset-4 transition hover:text-white/60"
+              >
+                SolusiVendor.com
+              </a>
+            </p>
+          </div>
         </div>
       </footer>
 
