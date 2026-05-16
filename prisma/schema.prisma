@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  category     String
+  description  String
+  price        String?
+  imageUrl     String?
+  gallery      String[]
+  specs        String[]
+  whatsappUrl  String?
+  shopeeUrl    String?
+  tokopediaUrl String?
+  isFeatured   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model HomeMedia {
+  id        String   @id @default(cuid())
+  type      String
+  title     String?
+  url       String
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String
+  username     String   @unique
+  passwordHash String
+  role         String   @default("ADMIN")
+  isDefault    Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  type      String
+  path      String
+  label     String?
+  referrer  String?
+  userAgent String?
+  ipHash    String?
+  sessionId String?
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([path])
+  @@index([createdAt])
+  @@index([sessionId])
+}
