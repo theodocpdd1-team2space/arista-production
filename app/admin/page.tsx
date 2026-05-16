@@ -145,6 +145,27 @@ const defaultHomeContent = {
     title: "We deliver\nuntil\nMalaysia.",
     desc: "Untuk produk custom ARISTA seperti LAN to XLR / Snake Cable, pengiriman tidak hanya di Indonesia. Kami juga bisa bantu pengiriman produk sampai Malaysia.",
   },
+    featuredProduct: {
+    image: "/images/product-cable.jpg",
+    leftEyebrow: "ARISTA PRODUCT",
+    leftTitle: "LAN TO XLR\nSNAKE CABLE",
+    iconLabel: "Cable Icon",
+    eyebrow: "CUSTOM CABLE FOR VENDOR",
+    title: "LIHAT\nKUALITASNYA.\nRASAKAN\nBEDANYA.",
+    description:
+      "Selain jasa event production, ARISTA juga memiliki produk custom untuk kebutuhan audio profesional. Produk dibuat untuk vendor sound, rental, gereja, panggung, dan instalasi yang butuh jalur kabel lebih bersih, rapi, dan efisien.",
+    features: [
+      "CUSTOM CHANNEL",
+      "MINIM NOISE",
+      "SETUP PANGGUNG RAPI",
+      "COCOK UNTUK RENTAL",
+    ],
+    primaryButtonText: "LIHAT PRODUK UTAMA",
+    primaryButtonUrl: "/product",
+    secondaryButtonText: "TANYA CUSTOM",
+    secondaryButtonUrl:
+      "https://wa.me/6281234567890?text=Halo%20ARISTA%20Production%2C%20saya%20ingin%20tanya%20produk%20custom.",
+  },
   productCategories: [
     {
       title: "LAN to XLR Snake Cable",
@@ -239,6 +260,15 @@ function mergeHomeContent(content: any) {
     delivery: {
       ...defaultHomeContent.delivery,
       ...(content?.delivery || {}),
+    },
+        featuredProduct: {
+      ...defaultHomeContent.featuredProduct,
+      ...(content?.featuredProduct || {}),
+      features:
+        Array.isArray(content?.featuredProduct?.features) &&
+        content.featuredProduct.features.length > 0
+          ? content.featuredProduct.features
+          : defaultHomeContent.featuredProduct.features,
     },
     cta: {
       ...defaultHomeContent.cta,
@@ -1000,6 +1030,25 @@ function HomeEditor({
   saveHomeContent,
   contentLoading,
 }: any) {
+  function updateFeaturedProductFeature(index: number, value: string) {
+    const next = [...(homeContent.featuredProduct?.features || [])];
+    next[index] = value;
+    updateHome("featuredProduct.features", next);
+  }
+
+  function addFeaturedProductFeature() {
+    updateHome("featuredProduct.features", [
+      ...(homeContent.featuredProduct?.features || []),
+      "NEW FEATURE",
+    ]);
+  }
+
+  function removeFeaturedProductFeature(index: number) {
+    const next = [...(homeContent.featuredProduct?.features || [])];
+    next.splice(index, 1);
+    updateHome("featuredProduct.features", next);
+  }
+
   return (
     <div className="grid gap-5">
       <div className="flex flex-col justify-between gap-4 border border-black bg-white p-5 md:flex-row md:items-center">
@@ -1092,6 +1141,133 @@ function HomeEditor({
           />
         </Panel>
       </div>
+
+      <Panel title="Home Product Highlight">
+        <div className="grid gap-5 lg:grid-cols-2">
+          <UploadField
+            label="Product Highlight Image"
+            value={homeContent.featuredProduct?.image || ""}
+            onChange={(v) => updateHome("featuredProduct.image", v)}
+            uploadFile={uploadFile}
+            uploading={uploading}
+            accept="image/*"
+          />
+
+          <div className="grid gap-4">
+            <Field
+              label="Left Eyebrow"
+              value={homeContent.featuredProduct?.leftEyebrow || ""}
+              onChange={(v) => updateHome("featuredProduct.leftEyebrow", v)}
+            />
+
+            <Field
+              label="Left Title"
+              value={homeContent.featuredProduct?.leftTitle || ""}
+              onChange={(v) => updateHome("featuredProduct.leftTitle", v)}
+              textarea
+            />
+
+            <Field
+              label="Icon Label"
+              value={homeContent.featuredProduct?.iconLabel || ""}
+              onChange={(v) => updateHome("featuredProduct.iconLabel", v)}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          <Field
+            label="Right Eyebrow"
+            value={homeContent.featuredProduct?.eyebrow || ""}
+            onChange={(v) => updateHome("featuredProduct.eyebrow", v)}
+          />
+
+          <Field
+            label="Main Title"
+            value={homeContent.featuredProduct?.title || ""}
+            onChange={(v) => updateHome("featuredProduct.title", v)}
+            textarea
+          />
+        </div>
+
+        <Field
+          label="Description"
+          value={homeContent.featuredProduct?.description || ""}
+          onChange={(v) => updateHome("featuredProduct.description", v)}
+          textarea
+        />
+
+        <div className="border border-black p-4">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-black/45">
+              Feature List
+            </p>
+
+            <button
+              onClick={addFeaturedProductFeature}
+              className="inline-flex items-center gap-2 border border-black bg-black px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-white hover:bg-white hover:text-black"
+            >
+              <Plus className="h-4 w-4" />
+              Add Feature
+            </button>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            {(homeContent.featuredProduct?.features || []).map(
+              (feature: string, index: number) => (
+                <div key={index} className="grid grid-cols-[1fr_auto] gap-3">
+                  <input
+                    value={feature}
+                    onChange={(e) =>
+                      updateFeaturedProductFeature(index, e.target.value)
+                    }
+                    className="w-full border border-black bg-white px-4 py-3 text-sm font-semibold outline-none"
+                  />
+
+                  <button
+                    onClick={() => removeFeaturedProductFeature(index)}
+                    className="border border-black p-3 hover:bg-black hover:text-white"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-2">
+          <Field
+            label="Primary Button Text"
+            value={homeContent.featuredProduct?.primaryButtonText || ""}
+            onChange={(v) =>
+              updateHome("featuredProduct.primaryButtonText", v)
+            }
+          />
+
+          <Field
+            label="Primary Button URL"
+            value={homeContent.featuredProduct?.primaryButtonUrl || ""}
+            onChange={(v) => updateHome("featuredProduct.primaryButtonUrl", v)}
+          />
+
+          <Field
+            label="Secondary Button Text"
+            value={homeContent.featuredProduct?.secondaryButtonText || ""}
+            onChange={(v) =>
+              updateHome("featuredProduct.secondaryButtonText", v)
+            }
+          />
+
+          <Field
+            label="Secondary Button URL"
+            value={homeContent.featuredProduct?.secondaryButtonUrl || ""}
+            onChange={(v) =>
+              updateHome("featuredProduct.secondaryButtonUrl", v)
+            }
+          />
+        </div>
+      </Panel>
 
       <Panel title="Slideshow Images">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

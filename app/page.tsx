@@ -193,6 +193,41 @@ const defaultHomeContent = {
     title: "We deliver\nuntil\nMalaysia.",
     desc: "Untuk produk custom ARISTA seperti LAN to XLR / Snake Cable, pengiriman tidak hanya di Indonesia. Kami juga bisa bantu pengiriman produk sampai Malaysia sesuai kebutuhan customer.",
   },
+  deliveryCards: [
+    {
+      title: "Indonesia",
+      desc: "Pengiriman produk ke berbagai kota.",
+    },
+    {
+      title: "Malaysia",
+      desc: "Bisa kirim produk custom ke Malaysia.",
+    },
+    {
+      title: "Quality Check",
+      desc: "Produk dicek sebelum dikirim.",
+    },
+  ],
+  featuredProduct: {
+    image:
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1400&auto=format&fit=crop",
+    leftEyebrow: "ARISTA Product",
+    leftTitle: "LAN to XLR\nSnake Cable",
+    iconLabel: "Cable",
+    eyebrow: "Custom Cable For Vendor",
+    title: "Lihat kualitasnya.\nRasakan bedanya.",
+    description:
+      "Selain jasa event production, ARISTA juga memiliki produk custom untuk kebutuhan audio profesional. Produk dibuat untuk vendor sound, rental, gereja, panggung, dan instalasi yang butuh jalur kabel lebih bersih, rapi, dan efisien.",
+    features: [
+      "Custom channel",
+      "Minim noise",
+      "Setup panggung rapi",
+      "Cocok untuk rental",
+    ],
+    primaryButtonText: "Lihat Produk Utama",
+    primaryButtonUrl: "/product",
+    secondaryButtonText: "Tanya Custom",
+    secondaryButtonUrl: whatsappUrl,
+  },
   productCategories: fallbackProductCategories,
   works: fallbackWorks,
   feedback: fallbackFeedback,
@@ -227,6 +262,15 @@ function mergeHomeContent(data: any) {
       ...defaultHomeContent.delivery,
       ...(data?.delivery || {}),
     },
+    featuredProduct: {
+      ...defaultHomeContent.featuredProduct,
+      ...(data?.featuredProduct || {}),
+      features:
+        Array.isArray(data?.featuredProduct?.features) &&
+        data.featuredProduct.features.length > 0
+          ? data.featuredProduct.features
+          : defaultHomeContent.featuredProduct.features,
+    },
     cta: {
       ...defaultHomeContent.cta,
       ...(data?.cta || {}),
@@ -247,6 +291,10 @@ function mergeHomeContent(data: any) {
       Array.isArray(data?.services) && data.services.length > 0
         ? data.services
         : defaultHomeContent.services,
+    deliveryCards:
+      Array.isArray(data?.deliveryCards) && data.deliveryCards.length > 0
+        ? data.deliveryCards
+        : defaultHomeContent.deliveryCards,
     productCategories:
       Array.isArray(data?.productCategories) && data.productCategories.length > 0
         ? data.productCategories
@@ -629,36 +677,24 @@ export default function Page() {
             </p>
 
             <div className="mt-10 grid border-l border-t border-white md:grid-cols-3">
-              {[
-                {
-                  icon: Truck,
-                  title: "Indonesia",
-                  desc: "Pengiriman produk ke berbagai kota.",
-                },
-                {
-                  icon: PackageCheck,
-                  title: "Malaysia",
-                  desc: "Bisa kirim produk custom ke Malaysia.",
-                },
-                {
-                  icon: PackageCheck,
-                  title: "Quality Check",
-                  desc: "Produk dicek sebelum dikirim.",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="border-b border-r border-white p-6"
-                >
-                  <item.icon className="mb-10 h-8 w-8" />
-                  <h3 className="text-2xl font-black uppercase tracking-[-0.04em]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 text-sm font-medium leading-relaxed text-white/50">
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
+              {home.deliveryCards.map((item, index) => {
+                const Icon = [Truck, PackageCheck, PackageCheck][index] || PackageCheck;
+
+                return (
+                  <div
+                    key={`${item.title}-${index}`}
+                    className="border-b border-r border-white p-6"
+                  >
+                    <Icon className="mb-10 h-8 w-8" />
+                    <h3 className="text-2xl font-black uppercase tracking-[-0.04em]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-4 text-sm font-medium leading-relaxed text-white/50">
+                      {item.desc}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -670,20 +706,18 @@ export default function Page() {
           <div className="border-b border-black bg-black text-white lg:border-b-0 lg:border-r">
             <div className="aspect-[4/3] overflow-hidden border-b border-white/30">
               <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1400&auto=format&fit=crop"
-                alt="ARISTA LAN to XLR Snake Cable"
+                src={home.featuredProduct.image}
+                alt={home.featuredProduct.leftTitle || "ARISTA Product"}
                 className="h-full w-full object-cover grayscale"
               />
             </div>
 
             <div className="p-8 md:p-10">
               <p className="text-xs font-black uppercase tracking-[0.35em] text-white/45">
-                ARISTA Product
+                {home.featuredProduct.leftEyebrow}
               </p>
               <h3 className="mt-5 text-5xl font-black uppercase leading-[0.9] tracking-[-0.07em] md:text-7xl">
-                LAN to XLR
-                <br />
-                Snake Cable
+                {renderLines(home.featuredProduct.leftTitle)}
               </h3>
             </div>
           </div>
@@ -694,29 +728,19 @@ export default function Page() {
             </div>
 
             <p className="mb-5 text-xs font-black uppercase tracking-[0.35em] text-black/45">
-              Custom Cable For Vendor
+              {home.featuredProduct.eyebrow}
             </p>
 
             <h2 className="text-5xl font-black uppercase leading-[0.9] tracking-[-0.07em] md:text-7xl">
-              Lihat kualitasnya.
-              <br />
-              Rasakan bedanya.
+              {renderLines(home.featuredProduct.title)}
             </h2>
 
             <p className="mt-8 max-w-2xl text-lg font-semibold leading-relaxed text-black/60">
-              Selain jasa event production, ARISTA juga memiliki produk custom
-              untuk kebutuhan audio profesional. Produk dibuat untuk vendor
-              sound, rental, gereja, panggung, dan instalasi yang butuh jalur
-              kabel lebih bersih, rapi, dan efisien.
+              {home.featuredProduct.description}
             </p>
 
             <div className="mt-10 grid gap-0 border-l border-t border-black md:grid-cols-2">
-              {[
-                "Custom channel",
-                "Minim noise",
-                "Setup panggung rapi",
-                "Cocok untuk rental",
-              ].map((item) => (
+              {(home.featuredProduct.features || []).map((item) => (
                 <div
                   key={item}
                   className="flex items-center gap-3 border-b border-r border-black p-5 text-sm font-black uppercase tracking-[0.12em]"
@@ -729,18 +753,18 @@ export default function Page() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <a
-                href="/product"
+                href={home.featuredProduct.primaryButtonUrl || "/product"}
                 className="inline-flex items-center justify-center gap-3 border border-black bg-black px-6 py-4 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-white hover:text-black"
               >
-                Lihat Produk Utama
+                {home.featuredProduct.primaryButtonText}
                 <ArrowRight className="h-4 w-4" />
               </a>
 
               <a
-                href={home.hero.ctaUrl || whatsappUrl}
+                href={home.featuredProduct.secondaryButtonUrl || home.hero.ctaUrl || whatsappUrl}
                 className="inline-flex items-center justify-center gap-3 border border-black px-6 py-4 text-xs font-black uppercase tracking-[0.18em] transition hover:bg-black hover:text-white"
               >
-                Tanya Custom
+                {home.featuredProduct.secondaryButtonText}
                 <MessageCircle className="h-4 w-4" />
               </a>
             </div>
